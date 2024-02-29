@@ -1,6 +1,5 @@
 package bg.dalexiev.demo.user;
 
-import bg.dalexiev.demo.EmptyResultDataAccessException;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +14,8 @@ public class UserService {
   }
 
   public UserResult findUserByEmail(@Nonnull String email) {
-    try {
-      final User user = repo.findUserByEmail(email);
-      return new UserResult.UserFound(user);
-    } catch (EmptyResultDataAccessException e) {
-      return new UserResult.UserNotFound(email);
-    }
+    return repo.findUserByEmail(email)
+        .map(user -> (UserResult) new UserResult.UserFound(user))
+        .orElse(new UserResult.UserNotFound(email));
   }
 }
