@@ -14,11 +14,12 @@ public class UserService {
     this.repo = repo;
   }
 
-  public User findUserByEmail(@Nonnull String email) throws UserNotFoundException {
+  public UserResult findUserByEmail(@Nonnull String email) {
     try {
-      return repo.findUserByEmail(email);
+      final User user = repo.findUserByEmail(email);
+      return new UserResult.UserFound(user);
     } catch (EmptyResultDataAccessException e) {
-      throw new UserNotFoundException();
+      return new UserResult.UserNotFound(email);
     }
   }
 }
